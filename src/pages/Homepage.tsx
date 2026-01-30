@@ -68,11 +68,11 @@ const Homepage: FC = () => {
   // Memoize images array to prevent recreation on every render
   const images = useMemo<string[]>(
     () => [
-      "/static/slide1.jpg",
-      "/static/slide2.jpg",
-      "/static/slide3.jpg",
-      "/static/slide4.jpg",
-      "/static/slide5.jpg",
+      "static/slide1.jpg",
+      "static/slide2.jpg",
+      "static/slide3.jpg",
+      "static/slide4.jpg",
+      "static/slide5.jpg",
     ],
     [],
   );
@@ -206,7 +206,7 @@ const Homepage: FC = () => {
         />
         <meta
           property="og:image"
-          content="https://yourwebsite.com/static/slide1.jpg"
+          content="https://romeomihail.ro/static/slide1.jpg"
         />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://yourwebsite.com" />
@@ -225,7 +225,7 @@ const Homepage: FC = () => {
         />
         <meta
           name="twitter:image"
-          content="https://yourwebsite.com/static/slide1.jpg"
+          content="https://romeomihail.ro/static/slide1.jpg"
         />
 
         {/* Structured Data for Local Business SEO */}
@@ -258,7 +258,7 @@ const Homepage: FC = () => {
           {/* Logo Section */}
           <div className="logo-container items-center justify-center py-8 hidden sm:flex">
             <img
-              src="/static/logo-negru.png"
+              src="static/logo-negru.png"
               alt="Romeo Mihail Photography - Fotograf Profesionist București"
               className="max-w-lg w-full px-4"
               width="512"
@@ -268,7 +268,7 @@ const Homepage: FC = () => {
           </div>
           <div className="logo-container items-center justify-center py-8 flex sm:hidden absolute z-10">
             <img
-              src="/static/logo-auriu.png"
+              src="static/logo-auriu.png"
               alt="Romeo Mihail Photography - Fotograf Nuntă București"
               className="max-w-lg w-full px-4"
               width="512"
@@ -389,7 +389,7 @@ const Homepage: FC = () => {
             {/* Logo Signature */}
             <div className="flex justify-center mb-8">
               <img
-                src="/static/logo-negru.png"
+                src="static/logo-negru.png"
                 alt="Romeo Mihail Photography Logo București"
                 className="h-48 w-auto"
                 width="192"

@@ -1,14 +1,17 @@
 import { Helmet } from "react-helmet-async";
 import AnimatedPage from "../components/AnimatedPage";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { useEffect, useMemo, type FC } from "react";
+import "swiper/css";
+import "swiper/css/autoplay";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 // ---------------------------------------------------------------------------
 // Homepage
 // ---------------------------------------------------------------------------
 const Homepage: FC = () => {
-  // Memoize images array to prevent recreation on every render
   const images = useMemo<string[]>(
     () => [
       "static/slide1.jpg",
@@ -20,7 +23,6 @@ const Homepage: FC = () => {
     [],
   );
 
-  // Memoized structured data for local SEO
   const structuredData = useMemo(
     () => ({
       "@context": "https://schema.org",
@@ -65,7 +67,6 @@ const Homepage: FC = () => {
     [],
   );
 
-  // Preload images
   useEffect(() => {
     images.forEach((src: string) => {
       const img = new Image();
@@ -93,14 +94,13 @@ const Homepage: FC = () => {
         />
         <meta
           name="keywords"
-          content="fotograf nunta bucuresti, fotograf profesionist bucuresti, fotograf nunta romania, servicii foto nunta, fotograf evenimente bucuresti, fotograf botez bucuresti, fotograf corporate bucuresti, fotograf portret bucuresti, pret fotograf nunta, romeo mihail photography"
+          content="fotograf nunta bucuresti, fotograf profesionist bucuresti, fotograf nunta romania, servicii foto nunta, fotografહ
+          izvori bucuresti, fotograf botez bucuresti, fotograf corporate bucuresti, fotograf portret bucuresti, pret fotograf nunta, romeo mihail photography"
         />
-        {/* Geo Tags */}
         <meta name="geo.region" content="RO-B" />
         <meta name="geo.placename" content="București" />
         <meta name="geo.position" content="44.4268;26.1025" />
         <meta name="ICBM" content="44.4268, 26.1025" />
-        {/* OG */}
         <meta
           property="og:title"
           content="Fotograf Nuntă București | Romeo Mihail Photography"
@@ -117,7 +117,6 @@ const Homepage: FC = () => {
         <meta property="og:url" content="https://romeomihail.ro" />
         <meta property="og:locale" content="ro_RO" />
         <meta property="og:site_name" content="Romeo Mihail Photography" />
-        {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -131,7 +130,6 @@ const Homepage: FC = () => {
           name="twitter:image"
           content="https://romeomihail.ro/static/slide1.jpg"
         />
-        {/* Structured data */}
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
@@ -154,29 +152,72 @@ const Homepage: FC = () => {
       </Helmet>
 
       <AnimatedPage>
-        <div className="fullscreen-carousel-wrapper">
-          <Carousel
-            autoPlay
-            infiniteLoop
-            interval={3000}
-            showStatus={false}
-            showThumbs={false}
-            showIndicators={true}
+        {/* ────────────────────────────────────────────────────────────── */}
+        {/* FULLSCREEN SWIPER                                              */}
+        {/* ────────────────────────────────────────────────────────────── */}
+        <div className="w-full h-screen relative">
+          <Swiper
+            modules={[Autoplay, Pagination, Navigation]}
+            slidesPerView={1}
+            loop={true}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            navigation={{
+              nextEl: ".swiper-btn--next",
+              prevEl: ".swiper-btn--prev",
+            }}
+            className="w-full h-full homepage-swiper"
           >
             {images.map((image, index) => (
-              <div key={image} className="carousel-slide-cover">
+              <SwiperSlide key={image} className="w-full h-full">
                 <img
                   src={image}
                   alt={`Slide ${index + 1}`}
-                  className="carousel-slide-img"
+                  className="w-full h-full object-cover object-center"
                   loading={index === 0 ? "eager" : "lazy"}
+                  fetchpriority={index === 0 ? "high" : "auto"}
                 />
-              </div>
+              </SwiperSlide>
             ))}
-          </Carousel>
+
+            {/* Custom nav buttons sitting beside the dots */}
+            <div className="swiper-btn--prev absolute bottom-7 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/45 hover:bg-black/70 transition-colors cursor-pointer">
+              <svg
+                className="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </div>
+            <div className="swiper-btn--next absolute bottom-7 z-20 flex items-center justify-center w-10 h-10 rounded-full bg-black/45 hover:bg-black/70 transition-colors cursor-pointer">
+              <svg
+                className="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2.5}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+          </Swiper>
         </div>
 
-        <div className="footer-section bg-gray-50 py-16 px-4">
+        {/* ────────────────────────────────────────────────────────────── */}
+        {/* FOOTER SECTION                                                 */}
+        {/* ────────────────────────────────────────────────────────────── */}
+        <div className="bg-gray-50 py-16 px-4">
           <div className="max-w-2xl mx-auto text-center flex flex-col items-center justify-center">
             <h1 className="text-2xl md:text-3xl font-light text-[#6F8584] mb-6">
               Fotograf Profesionist de Nuntă în București și România
@@ -188,111 +229,66 @@ const Homepage: FC = () => {
               România. Cu ani de experiență și o viziune artistică unică,
               surprindem cele mai prețioase momente ale evenimentelor voastre
               speciale. Oferim servicii complete de fotografie pentru nunți,
-              botezuri, godine corporate și portrete în București, Ilfov și în
+              botezuri, där躍 corporate și portrete în București, Ilfov și în
               întreaga țară. Pachete personalizate și prețuri competitive.
             </p>
 
-            {/* Service areas */}
             <div className="mb-8 text-sm text-gray-600">
               <p className="mb-2">
                 <strong>Zone acoperite:</strong> București (toate sectoarele),
                 Ilfov, Ploiești, Brașov, Constanța, Cluj-Napoca și toată România
               </p>
               <p>
-                <strong>Servicii:</strong> Fotografie Nuntă, Fotografie Botez,
-                Fotografie Corporate, Portrete Profesionale, Ședințe Foto
-                планина
+                <strong>Servicii:</strong> Fotografie Nuntă, Fotographie Botez,
+                Fotographie Corporate, Portrete Profesionale, Ședințe Foto
               </p>
             </div>
           </div>
         </div>
 
+        {/* ────────────────────────────────────────────────────────────── */}
+        {/* SWIPER STYLES                                                  */}
+        {/* ────────────────────────────────────────────────────────────── */}
         <style>{`
-          .fullscreen-carousel-wrapper {
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-          }
-
-          /* The carousel root itself must also be 100 vh */
-          .fullscreen-carousel-wrapper .carousel {
-            height: 100vh;
-          }
-
-          /* Slider track + every slide = full height */
-          .fullscreen-carousel-wrapper .carousel .slider-wrapper,
-          .fullscreen-carousel-wrapper .carousel .slider {
-            height: 100vh !important;
-          }
-          .fullscreen-carousel-wrapper .carousel .slide {
-            height: 100vh !important;
-            background: transparent !important;
-          }
-
-          .carousel-slide-cover {
-            width: 100%;
-            height: 100vh;
-            overflow: hidden;
-          }
-          .carousel-slide-img {
-            display: block;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-          }
-
-          .fullscreen-carousel-wrapper .carousel .control-dots {
-            position: absolute !important;
-            bottom: 28px !important;
-            left: 0;
-            right: 0;
-            margin: 0 !important;
+          /* Dots row sits centered at the bottom; arrows flank it */
+          .homepage-swiper .swiper-pagination {
             display: flex;
-            justify-content: center;
             align-items: center;
-            z-index: 20;
+            justify-content: center;
             gap: 8px;
+            bottom: 28px !important;
+            /* push dots inward so arrows have room */
+            padding: 0 52px;
+            box-sizing: border-box;
           }
-          .fullscreen-carousel-wrapper .carousel .control-dots .dot {
-            background: rgba(255, 255, 255, 0.5) !important;
-            box-shadow: none !important;
+
+          .homepage-swiper .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.5);
             width: 10px !important;
             height: 10px !important;
-            margin: 0 !important;
             border-radius: 50%;
+            margin: 0 !important;
+            opacity: 1 !important;
             transition: background 0.2s;
           }
-          .fullscreen-carousel-wrapper .carousel .control-dots .dot.selected {
+
+          .homepage-swiper .swiper-pagination-bullet-active {
             background: #fff !important;
           }
 
-          .carousel-arrow {
-            position: absolute !important;
-            bottom: 24px !important;
-            z-index: 20;
-            background: rgba(0, 0, 0, 0.45);
-            color: #fff;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background 0.2s;
+          /* Position the two arrow containers so they
+             sit symmetrically beside the dot row */
+          .homepage-swiper .swiper-btn--prev {
+            left: calc(50% - 52px - 40px);
           }
-          .carousel-arrow:hover {
-            background: rgba(0, 0, 0, 0.7);
+          .homepage-swiper .swiper-btn--next {
+            right: calc(50% - 52px - 40px);
           }
-          .carousel-arrow--prev {
-            /* sit to the left of the dots cluster */
-            left: calc(50% - 100px) !important;
-          }
-          .carousel-arrow--next {
-            right: calc(50% - 100px) !important;
+
+          /* Kill the default swiper arrows entirely */
+          .homepage-swiper .swiper-button-prev,
+          .homepage-swiper .swiper-button-next {
+            display: none;
           }
         `}</style>
       </AnimatedPage>

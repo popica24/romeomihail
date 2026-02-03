@@ -9,6 +9,7 @@ import { AnimatePresence } from "framer-motion";
 import Contact from "./pages/Contact";
 import { HelmetProvider } from "react-helmet-async";
 import Prices from "./pages/Prices";
+import AlbumCatalogue from "./pages/AlbumCatalogue";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -21,6 +22,10 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/preturi" element={<Prices />} />
               <Route path="/premii" element={<Prizes />} />
               <Route path="/contact" element={<Contact />} />
+              <Route
+                path="/albume/:albumCategory"
+                element={<AlbumCatalogue />}
+              />
             </Route>
           </Routes>
         </AnimatePresence>

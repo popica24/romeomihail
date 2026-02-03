@@ -1,1 +1,16 @@
 @import "tailwindcss";
+
+html,
+body {
+  scroll-behavior: smooth;
+}
+
+.parallax-effect-text {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+
+  .inner-element {
+    transform: translateZ(40px) scale(0.8);
+    width: 70%;
+  }
+}

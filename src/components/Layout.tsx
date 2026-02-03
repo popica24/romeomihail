@@ -2,6 +2,7 @@ import Navbar from "./Navbar";
 import { Outlet } from "react-router-dom";
 import logoAuriu from "../assets/logo-auriu.png";
 import logoNegru from "../assets/logo-negru.png";
+import Footer from "./Footer";
 const Layout = () => {
   return (
     <>
@@ -12,6 +13,7 @@ const Layout = () => {
       <main>
         <Outlet />
       </main>
+      <Footer />
     </>
   );
 };

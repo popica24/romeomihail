@@ -34,7 +34,7 @@ const menuItems: MenuItem[] = [
           { label: "GEORGE & ALEXANDRA", href: "#" },
           {
             label: "VEZI MAI MULT",
-            href: "/nunta",
+            href: "/albume/nunta",
             className: "underline underline-offset-2",
           },
         ],
@@ -46,8 +46,8 @@ const menuItems: MenuItem[] = [
           { label: "ALEXANDRU", href: "#" },
           { label: "ANDREI", href: "#" },
           {
-            label: "MERCHIE MAI MULT",
-            href: "/botez",
+            label: "VEZI MAI MULT",
+            href: "/albume/botez",
             className: "underline underline-offset-2",
           },
         ],
@@ -59,8 +59,8 @@ const menuItems: MenuItem[] = [
           { label: "IOANA", href: "#" },
           { label: "ALEXANDRA", href: "#" },
           {
-            label: "MERCHIE MAI MULT",
-            href: "/trash-the-dress",
+            label: "VEZI MAI MULT",
+            href: "/albume/trash_the_dress",
             className: "underline underline-offset-2",
           },
         ],
@@ -132,7 +132,7 @@ const Navbar = ({
   const renderBadge = (badge?: string) => {
     if (!badge) return null;
     return (
-      <span className="bg-amber-600 text-white text-xs px-2 py-0.5 tracking-wider">
+      <span className="bg-[#6F8584] text-white text-xs px-2 py-0.5 tracking-wider">
         {badge}
       </span>
     );
@@ -268,9 +268,13 @@ const Navbar = ({
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center h-16 space-x-8 text-xs tracking-wider">
             {scrolled ? (
-              <div className="mr-auto">{logoScrolled}</div>
+              <Link to="/" className="mr-auto">
+                {logoScrolled}
+              </Link>
             ) : (
-              <div className="mr-auto">{logo}</div>
+              <Link to="/" className="mr-auto">
+                {logo}
+              </Link>
             )}
 
             {items.map((item, index) => (
@@ -307,14 +311,18 @@ const Navbar = ({
       <div className="lg:hidden">
         <div className="flex items-center justify-center h-16 px-4">
           {scrolled ? (
-            <div className="mr-auto">{logoScrolled}</div>
+            <Link to="/" className="mr-auto">
+              {logoScrolled}
+            </Link>
           ) : (
-            <div className="mr-auto">{logo}</div>
+            <Link to="/" className="mr-auto">
+              {logo}
+            </Link>
           )}
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="focus:outline-none mx-auto"
+            className="focus:outline-none ms-auto"
             aria-label="Toggle menu"
           >
             {!isMobileMenuOpen ? (

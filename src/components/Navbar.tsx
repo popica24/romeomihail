@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 
 interface MenuItem {
@@ -46,7 +46,7 @@ const menuItems: MenuItem[] = [
           { label: "ALEXANDRU", href: "#" },
           { label: "ANDREI", href: "#" },
           {
-            label: "VEZI MAI MULT",
+            label: "MERCHIE MAI MULT",
             href: "/botez",
             className: "underline underline-offset-2",
           },
@@ -59,7 +59,7 @@ const menuItems: MenuItem[] = [
           { label: "IOANA", href: "#" },
           { label: "ALEXANDRA", href: "#" },
           {
-            label: "VEZI MAI MULT",
+            label: "MERCHIE MAI MULT",
             href: "/trash-the-dress",
             className: "underline underline-offset-2",
           },
@@ -90,12 +90,34 @@ const menuItems: MenuItem[] = [
 interface NavbarProps {
   items?: MenuItem[];
   logo?: React.ReactNode;
+  logoScrolled?: React.ReactNode;
   className?: string;
 }
 
-const Navbar = ({ items = menuItems, logo, className = "" }: NavbarProps) => {
+const Navbar = ({
+  items = menuItems,
+  logo,
+  logoScrolled,
+  className = "",
+}: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
+  const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!navRef.current) return;
+      const navHeight = navRef.current.offsetHeight;
+      setScrolled(window.scrollY >= navHeight);
+    };
+
+    // Run once on mount to get initial state (in case page loads mid-scroll)
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleMenu = (menuLabel: string) => {
     setOpenMenus((prev) => ({
@@ -232,18 +254,34 @@ const Navbar = ({ items = menuItems, logo, className = "" }: NavbarProps) => {
   };
 
   return (
-    <nav className={`bg-black text-white ${className}`}>
+    <nav
+      ref={navRef}
+      className={`
+        fixed top-0 left-0 right-0 z-40
+        ${className}
+        transition-colors duration-300 ease-in-out
+        ${scrolled ? "bg-white text-black shadow-sm" : "bg-transparent text-white"}
+      `}
+    >
       {/* Desktop Navigation */}
       <div className="hidden lg:block">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center h-16 space-x-8 text-xs tracking-wider">
-            {logo && <div className="mr-auto">{logo}</div>}
+            {scrolled ? (
+              <div className="mr-auto">{logoScrolled}</div>
+            ) : (
+              <div className="mr-auto">{logo}</div>
+            )}
 
             {items.map((item, index) => (
               <div key={index} className="relative group">
                 {hasSubmenu(item) ? (
                   <>
-                    <button className="flex items-center space-x-1 hover:text-gray-300 transition-colors">
+                    <button
+                      className={`flex items-center space-x-1 transition-colors ${
+                        scrolled ? "hover:text-gray-600" : "hover:text-gray-300"
+                      }`}
+                    >
                       <span>{item.label}</span>
                       {renderChevronDown()}
                     </button>
@@ -252,7 +290,9 @@ const Navbar = ({ items = menuItems, logo, className = "" }: NavbarProps) => {
                 ) : (
                   <Link
                     to={item.href || "#"}
-                    className="hover:text-gray-300 transition-colors"
+                    className={`transition-colors ${
+                      scrolled ? "hover:text-gray-600" : "hover:text-gray-300"
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -266,7 +306,11 @@ const Navbar = ({ items = menuItems, logo, className = "" }: NavbarProps) => {
       {/* Mobile Navigation */}
       <div className="lg:hidden">
         <div className="flex items-center justify-center h-16 px-4">
-          {logo && <div className="mr-auto">{logo}</div>}
+          {scrolled ? (
+            <div className="mr-auto">{logoScrolled}</div>
+          ) : (
+            <div className="mr-auto">{logo}</div>
+          )}
 
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -275,9 +319,15 @@ const Navbar = ({ items = menuItems, logo, className = "" }: NavbarProps) => {
           >
             {!isMobileMenuOpen ? (
               <div className="space-y-1.5">
-                <div className="w-8 h-0.5 bg-white"></div>
-                <div className="w-8 h-0.5 bg-white"></div>
-                <div className="w-8 h-0.5 bg-white"></div>
+                <div
+                  className={`w-8 h-0.5 ${scrolled ? "bg-black" : "bg-white"} transition-colors`}
+                ></div>
+                <div
+                  className={`w-8 h-0.5 ${scrolled ? "bg-black" : "bg-white"} transition-colors`}
+                ></div>
+                <div
+                  className={`w-8 h-0.5 ${scrolled ? "bg-black" : "bg-white"} transition-colors`}
+                ></div>
               </div>
             ) : (
               <svg

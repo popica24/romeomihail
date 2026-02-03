@@ -162,8 +162,6 @@ const Homepage: FC = () => {
             showStatus={false}
             showThumbs={false}
             showIndicators={true}
-            swipeable={true}
-            emulateTouch={true}
           >
             {images.map((image, index) => (
               <div key={image} className="carousel-slide-cover">

@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { handleWhatsAppClick } from "../helpers/WhatsAppClick";
 
 interface MenuItem {
   label: string;
   href?: string;
   badge?: string;
   submenu?: SubMenuItem[];
+  action?: () => void;
 }
 
 interface SubMenuItem {
@@ -60,7 +62,7 @@ const menuItems: MenuItem[] = [
           { label: "ALEXANDRA", href: "#" },
           {
             label: "VEZI MAI MULT",
-            href: "/albume/trash_the_dress",
+            href: "/albume/trash-the-dress",
             className: "underline underline-offset-2",
           },
         ],
@@ -79,11 +81,11 @@ const menuItems: MenuItem[] = [
   },
   {
     label: "DESPRE MINE",
-    submenu: [],
+    href: "/despre-mine",
   },
   {
     label: "CONTACT",
-    href: "/contact",
+    action: handleWhatsAppClick,
   },
 ];
 
@@ -104,6 +106,13 @@ const Navbar = ({
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+    setOpenMenus({});
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -294,6 +303,7 @@ const Navbar = ({
                 ) : (
                   <Link
                     to={item.href || "#"}
+                    onClick={item.action || (() => {})}
                     className={`transition-colors ${
                       scrolled ? "hover:text-gray-600" : "hover:text-gray-300"
                     }`}
@@ -363,7 +373,7 @@ const Navbar = ({
         >
           <div className="flex flex-col h-full">
             {/* Close Button */}
-            <div className="flex justify-center items-center h-16 border-b border-gray-200">
+            <div className="flex justify-end items-center h-16 border-b border-gray-200 me-4">
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="focus:outline-none"
@@ -405,7 +415,7 @@ const Navbar = ({
                       <Link
                         to={item.href || "#"}
                         className="block w-full text-left"
-                        onClick={() => setIsMobileMenuOpen(false)}
+                        onClick={item.action || (() => {})}
                       >
                         {item.label}
                       </Link>

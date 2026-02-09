@@ -14,18 +14,27 @@ const categoryMeta: Record<
 > = {
   nunta: {
     title: "Nuntă",
-    subtitle: "Wedding Day Memories",
-    description: "Momentele speciale ale zilei tale cel mai frumos",
+    subtitle: "Momente care durează o veșnicie",
+    description:
+      "Fiecare poveste de dragoste merită să fie imortalizată cu eleganță și pasiune",
   },
   botez: {
     title: "Botez",
-    subtitle: "Moments of Blessing",
-    description: "Suflete pure în lumina harului",
+    subtitle: "Binecuvântări și zâmbete nevinovate",
+    description:
+      "Suflete pure în lumina harului divin, capturate cu grijă și sensibilitate",
   },
-  trash_the_dress: {
+  cununie: {
+    title: "Cununie Civilă",
+    subtitle: "Începutul oficial al poveștii voastre",
+    description:
+      "Momentul în care dragostea devine oficial destinație, nu doar călătorie",
+  },
+  "trash-the-dress": {
     title: "Trash The Dress",
-    subtitle: "Moments of Unity",
-    description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit",
+    subtitle: "Libertate, aventură și amintiri de neuitat",
+    description:
+      "O zi în care rochia de mireasă devine parte dintr-o poveste îndrăzneață și plină de culoare",
   },
 };
 
@@ -34,62 +43,61 @@ const dummyAlbums: Record<string, Album[]> = {
     {
       id: "andrei-si-maria",
       name: "Andrei si Maria",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
     {
       id: "Alexandru-si-ana",
       name: "Alexandru si Ana",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
     {
       id: "mihai-si-raluca",
       name: "Mihai si Raluca",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
     {
       id: "gabriel-si-ioana",
       name: "Gabriel si Ioana",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
     {
       id: "victor-si-Alexandra",
       name: "Victor si Alexandra",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
     {
       id: "dan-si-florina",
       name: "Dan si Florina",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
   ],
   botez: [
-    { id: "botez-Emma", name: "Botez Emma", coverUrl: "/dummy_cover.jpg" },
-    { id: "botez-Lucas", name: "Botez Lucas", coverUrl: "/dummy_cover.jpg" },
-    { id: "botez-Sofia", name: "Botez Sofia", coverUrl: "/dummy_cover.jpg" },
-    { id: "botez-Noah", name: "Botez Noah", coverUrl: "/dummy_cover.jpg" },
+    { id: "botez-Emma", name: "Botez Emma", coverUrl: "/static/slide1.jpg" },
+    { id: "botez-Lucas", name: "Botez Lucas", coverUrl: "/static/slide1.jpg" },
+    { id: "botez-Sofia", name: "Botez Sofia", coverUrl: "/static/slide1.jpg" },
+    { id: "botez-Noah", name: "Botez Noah", coverUrl: "/static/slide1.jpg" },
   ],
-  trash_the_dress: [
+  "trash-the-dress": [
     {
-      id: "tdd-Maria",
+      id: "trash-the-dress-maria",
       name: "Trash The Dress Maria",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide1.jpg",
     },
     {
-      id: "tdd-Ana",
+      id: "trash-the-dress-ana",
       name: "Trash The Dress Ana",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide2.jpg",
     },
     {
-      id: "tdd-Ioana",
+      id: "trash-the-dress-ioana",
       name: "Trash The Dress Ioana",
-      coverUrl: "/dummy_cover.jpg",
+      coverUrl: "/static/slide3.jpg",
     },
   ],
 };
 
 const Catalogue = () => {
   const { albumCategory } = useParams<{ albumCategory: string }>();
-
   const meta = albumCategory ? categoryMeta[albumCategory] : null;
   const albums = albumCategory ? dummyAlbums[albumCategory] || [] : [];
   const notFound = !meta;
@@ -157,14 +165,6 @@ const Catalogue = () => {
           className="relative w-full flex flex-col items-center justify-center text-center px-6 pt-20 pb-16"
           style={{ backgroundColor: "#6F8584" }}
         >
-          {/* pattern */}
-          <div
-            className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            }}
-          />
-
           <div className="relative z-10">
             <p className="text-white/60 text-xs tracking-widest uppercase mb-3">
               Portofoliu
@@ -191,8 +191,11 @@ const Catalogue = () => {
             <p className="text-gray-400 text-xs tracking-widest uppercase">
               {albums.length} {albums.length === 1 ? "Album" : "Albume"}
             </p>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-gray-400 md:hidden">
               Tap pentru a deschide albumul
+            </p>
+            <p className="text-xs text-gray-400 hidden md:block">
+              Click pentru a deschide albumul
             </p>
           </div>
         </div>
@@ -234,7 +237,7 @@ const Catalogue = () => {
             {albums.map((album, i) => (
               <Link
                 key={album.id}
-                to={`/album?name=${album.id}`}
+                to={`/albume/${albumCategory}/${album.id}`}
                 className="group block"
                 data-aos="fade-up"
                 data-aos-delay={`${Math.min(i * 80, 600)}`}
@@ -248,7 +251,7 @@ const Catalogue = () => {
                   transitionSpeed={1500}
                   scale={1.02}
                   gyroscope={true}
-                  className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl transition-shadow duration-500"
+                  className="relative aspect-3/4 rounded-2xl overflow-hidden shadow-md group-hover:shadow-xl transition-shadow duration-500"
                   style={{ transformStyle: "preserve-3d" }}
                 >
                   <img
@@ -256,7 +259,7 @@ const Catalogue = () => {
                     alt={album.name}
                     className="absolute inset-0 w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
                   <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-all duration-500" />
 
                   {/* content */}

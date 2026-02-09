@@ -3,6 +3,8 @@
 html,
 body {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  @apply bg-gray-50;
 }
 
 .parallax-effect-text {
@@ -13,4 +15,53 @@ body {
     transform: translateZ(40px) scale(0.8);
     width: 70%;
   }
+}
+.homepage-swiper .swiper-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  bottom: 28px !important;
+  padding: 0 52px;
+  box-sizing: border-box;
+  margin-bottom: 14px;
+}
+
+.homepage-swiper .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5);
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50%;
+  margin: 0 !important;
+  opacity: 1 !important;
+  transition: background 0.2s;
+}
+
+.homepage-swiper .swiper-pagination-bullet-active {
+  background: #fff !important;
+}
+
+.homepage-swiper .swiper-btn--prev {
+  left: calc(50% - 52px - 40px);
+}
+
+.homepage-swiper .swiper-btn--next {
+  right: calc(50% - 52px - 40px);
+}
+
+.homepage-swiper .swiper-button-prev,
+.homepage-swiper .swiper-button-next {
+  display: none;
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
 }

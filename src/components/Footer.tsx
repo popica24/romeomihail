@@ -1,5 +1,5 @@
 import { memo, useMemo, type FC, type ReactNode } from "react";
-import logo from "../assets/logo-negru.png";
+import logo from "../assets/logo-negru.avif";
 // ---------------------------------------------------------------------------
 // Type definitions
 // ---------------------------------------------------------------------------

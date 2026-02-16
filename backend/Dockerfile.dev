@@ -1,0 +1,47 @@
+# Use Python 3.12 to match Django 6.0.2 requirements
+FROM python:3.12-slim
+
+# Create and set the working directory
+WORKDIR /app
+
+# Set environment variables for Python
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+# Install system dependencies (PostgreSQL client for database operations)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install UV for faster dependency management
+RUN pip install --upgrade pip && pip install uv
+
+# Copy requirements first (better layer caching)
+COPY requirements.dev.txt ./requirements.txt
+
+# Install dependencies globally
+RUN uv pip install --system -r requirements.txt --no-cache
+
+# Create non-root user
+RUN adduser --disabled-password --gecos "" adminuser
+
+# Copy entrypoint script and fix Windows line endings
+COPY entrypoint.dev.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh && sed -i 's/\r$//g' /entrypoint.sh
+
+# Copy project code (MUST be before USER command)
+COPY . .
+
+# Change ownership of all files to adminuser
+RUN chown -R adminuser:adminuser /app
+
+# Switch to non-root user
+USER adminuser
+
+# Expose Django's default port
+EXPOSE 8000
+
+# Use the entrypoint script to run migrations, then start the local server
+ENTRYPOINT ["/entrypoint.sh"]

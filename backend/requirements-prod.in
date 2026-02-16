@@ -1,0 +1,8 @@
+Django==6.0.2
+psycopg[binary]
+requests
+django-daisy
+django-tinymce
+djangorestframework
+django-cors-headers
+Pillow

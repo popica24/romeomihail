@@ -76,6 +76,7 @@ class Category(models.Model):
         if first_album and first_album.cover:
             return first_album.cover.url
         return None
+        
 class Album(models.Model):
     name = models.CharField(
         max_length=200,

@@ -48,6 +48,7 @@ services:
     restart: unless-stopped
 
   rm_pgadmin:
+    profiles: ["dev"]
     image: dpage/pgadmin4
     container_name: romeomihail_pgadmin
     environment:
@@ -65,7 +66,7 @@ services:
       - ./volumes/pgadmin:/var/lib/pgadmin
     restart: unless-stopped
 
-  # Production only services
+
   certbot:
     profiles: ["prod"]
     image: certbot/certbot

@@ -11,13 +11,19 @@ charset-normalizer==3.4.4
 django==6.0.2
     # via
     #   -r requirements-prod.in
+    #   django-admin-sortable2
     #   django-cors-headers
     #   django-daisy
+    #   django-storages
     #   django-tinymce
     #   djangorestframework
+django-admin-sortable2==2.3.1
+    # via -r requirements-prod.in
 django-cors-headers==4.9.0
     # via -r requirements-prod.in
 django-daisy==2.0.7
+    # via -r requirements-prod.in
+django-storages==1.14.6
     # via -r requirements-prod.in
 django-tinymce==5.0.0
     # via -r requirements-prod.in
@@ -35,7 +41,5 @@ requests==2.32.5
     # via -r requirements-prod.in
 sqlparse==0.5.5
     # via django
-typing-extensions==4.15.0
-    # via psycopg
 urllib3==2.6.3
     # via requests

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Album, Photo
+from .models import Category, Album, CategoryCover, Photo
 
 
 class PhotoSerializer(serializers.ModelSerializer):
@@ -65,17 +65,28 @@ class AlbumDetailSerializer(serializers.ModelSerializer):
         return None
 
 
+class CategoryCoverSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CategoryCover
+        fields = ['id', 'image_url', 'title', 'order', 'is_active']
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        return None
+    
+
 class CategorySerializer(serializers.ModelSerializer):
-    albums = AlbumListSerializer(many=True, read_only=True)
-    album_count = serializers.SerializerMethodField()
+    covers = CategoryCoverSerializer(many=True, read_only=True)
+    published_album_count = serializers.IntegerField(read_only=True)  # ✅ Removed source
+    cover_url = serializers.CharField(read_only=True)  # ✅ Removed source
 
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'description', 'album_count', 'albums']
-
-    def get_album_count(self, obj):
-        return obj.albums.filter(is_published=True).count()
-
+        fields = ['id', 'name', 'slug', 'description', 'is_active', 'published_album_count', 'cover_url', 'covers']
 
 class PhotoReorderSerializer(serializers.Serializer):
     """Used for reordering photos via drag & drop"""

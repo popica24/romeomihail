@@ -5,36 +5,42 @@ import QuoteSection from "./Components/QuoteSection";
 import CategoriesGrid from "./Components/CategoriesGrid";
 import FooterSection from "./Components/FooterSection";
 import { Link } from "react-router-dom";
+import { useCategoriesQuery } from "../../hooks/useCategoriesQuery";
 
 const Homepage: FC = () => {
-  const images = useMemo<string[]>(
+  // Fetch categories from backend
+  const { data: categoriesData, isLoading } = useCategoriesQuery();
+
+  // Static hero images (always use these)
+  const heroImages = useMemo<string[]>(
     () => [
-      "static/slide1.jpg",
-      "static/slide2.jpg",
-      "static/slide3.jpg",
-      "static/slide4.jpg",
-      "static/slide5.jpg",
+      "/static/slide1.jpg",
+      "/static/slide2.jpg",
+      "/static/slide3.jpg",
+      "/static/slide4.jpg",
+      "/static/slide5.jpg",
     ],
-    [],
+    []
   );
 
-  const categories = useMemo(
-    () => [
-      { text: "Nunta", link: "nunta", image: "/static/slide1.jpg" },
-      { text: "Botez", link: "botez", image: "/static/slide1.jpg" },
-      {
-        text: "TRASH THE DRESS",
-        link: "trash-the-dress",
-        image: "/static/slide1.jpg",
-      },
-    ],
-    [],
-  );
+  const categories = useMemo(() => {
+    if (!categoriesData || categoriesData.length === 0) {
+      return [];
+    }
+
+    return categoriesData
+      .filter((cat) => cat.is_active)
+      .map((category) => ({
+        text: category.name,
+        link: category.slug,
+        image: category.cover_url || "",
+      }));
+  }, [categoriesData]);
 
   return (
     <AnimatedPage>
       <div className="relative w-full h-screen">
-        <HeroCarousel images={images} />
+        <HeroCarousel images={heroImages} />
         <QuoteSection quote="Fiți-ar viața zâmbet!" author="Romeo Mihail" />
       </div>
 
@@ -44,7 +50,7 @@ const Homepage: FC = () => {
           <h2 className="mb-4 text-3xl font-light text-[#6F8584] md:text-4xl">
             Cine Sunt?
           </h2>
-          <p className="max-w-2xl mx-auto mb-8 text-gray-600 leading-relaxed">
+          <p className="max-w-2xl mx-auto mb-8 leading-relaxed text-gray-600">
             Bine ați venit! Sunt Romeo Mihail, fotograf profesionist specializat
             în capturarea momentelor voastre speciale. Cu peste 10 ani de
             experiență și o pasiune autentică pentru fotografie, transform
@@ -72,7 +78,9 @@ const Homepage: FC = () => {
         </div>
       </div>
 
-      <CategoriesGrid categories={categories} />
+      {!isLoading && categories.length > 0 && (
+        <CategoriesGrid categories={categories} />
+      )}
 
       <FooterSection
         title="Fotograf Profesionist de Nuntă în București și România"

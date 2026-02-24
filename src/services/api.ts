@@ -1,5 +1,25 @@
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
 
+export interface CategoryCover {
+  id: number;
+  image: string;
+  image_url: string;
+  title: string;
+  order: number;
+  is_active: boolean;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  is_active: boolean;
+  published_album_count: number;
+  cover_url: string | null;
+  covers: CategoryCover[]; // ✅ Added
+}
+
 export interface Album {
   id: number;
   name: string;
@@ -46,4 +66,20 @@ export const getAlbum = async (slug: string): Promise<Album> => {
   const response = await fetch(`${API_URL}/albums/${slug}/`);
   if (!response.ok) throw new Error("Failed to fetch album");
   return response.json();
+};
+
+export const getCategories = async (): Promise<Category[]> => {
+  const response = await fetch(`${API_URL}/categories/`);
+  if (!response.ok) throw new Error("Failed to fetch categories");
+  const data = await response.json();
+  
+  if (data.results && Array.isArray(data.results)) {
+    return data.results;
+  }
+  
+  if (Array.isArray(data)) {
+    return data;
+  }
+  
+  return [];
 };

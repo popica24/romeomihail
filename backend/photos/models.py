@@ -22,6 +22,9 @@ def photo_upload_path(instance, filename):
     ext = filename.rsplit('.', 1)[-1].lower()
     return f'albums/{instance.album.slug}/photos/{instance.order:04d}.{ext}'
 
+def category_cover_path(instance, filename):
+    ext = filename.rsplit('.', 1)[-1].lower()
+    return f'categories/{instance.category.slug}/cover.{ext}'
 
 class Category(models.Model):
     name = models.CharField(
@@ -58,7 +61,21 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def published_album_count(self):
+        return self.albums.filter(is_published=True).count()
 
+    @property
+    def cover_url(self):
+        """Get the latest category cover or fallback to first album cover"""
+        cover = self.covers.filter(is_active=True).order_by('-order', '-created_at').first()
+        if cover and cover.image:
+            return cover.image.url
+        # Fallback to first published album cover
+        first_album = self.albums.filter(is_published=True).first()
+        if first_album and first_album.cover:
+            return first_album.cover.url
+        return None
 class Album(models.Model):
     name = models.CharField(
         max_length=200,
@@ -266,3 +283,53 @@ class Photo(models.Model):
     def __str__(self):
         return f"#{self.order} — {self.album.name}"
 
+
+class CategoryCover(models.Model):
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="covers",
+        help_text="Categoria pentru care este această copertă"
+    )
+    image = models.ImageField(
+        upload_to=category_cover_path,
+        validators=[
+            FileExtensionValidator(['jpg', 'jpeg', 'png', 'webp']),
+            validate_image_size,
+        ],
+        help_text="Imagine de copertă pentru categorie (max 20MB)"
+    )
+    title = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Titlu pentru această copertă (opțional)"
+    )
+    order = models.PositiveIntegerField(
+        default=0,
+        db_index=True,
+        help_text="Ordinea de afișare (0 = primul)"
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Bifați pentru a activa această copertă"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Copertă Categorie"
+        verbose_name_plural = "Coperți Categorii"
+        db_table = "category_cover"
+        ordering = ["category", "order", "-created_at"]
+        indexes = [
+            models.Index(fields=["category", "is_active", "order"]),
+        ]
+
+    def __str__(self):
+        return f"{self.category.name} - Copertă {self.order}"
+
+    def delete(self, *args, **kwargs):
+        """Delete image file when cover is deleted"""
+        if self.image and os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        super().delete(*args, **kwargs)

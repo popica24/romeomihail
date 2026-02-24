@@ -66,26 +66,6 @@ services:
     restart: unless-stopped
 
   # Production only services
-  nginx:
-    profiles: ["prod"]
-    image: nginx:alpine
-    container_name: romeomihail_nginx
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./ssl:/etc/letsencrypt:ro
-      - ./certbot-webroot:/var/www/certbot:ro
-      - ./volumes/static:/app/staticfiles:ro
-      - ./volumes/media:/app/media:ro
-    networks:
-      - romeomihail_network
-    depends_on:
-      - backend
-    restart: always
-
   certbot:
     profiles: ["prod"]
     image: certbot/certbot

@@ -237,9 +237,9 @@ STATIC_URL = "static/"
 STATIC_ROOT = "/staticfiles"
 
 
-# Media files (User uploads)
 MEDIA_URL = "/media/"
-MEDIA_ROOT = "/media"
+MEDIA_ROOT = "/app/media"
+
 
 # Upload limits (30MB)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 30 * 1024 * 1024  # 30MB

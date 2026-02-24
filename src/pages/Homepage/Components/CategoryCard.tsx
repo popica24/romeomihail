@@ -17,7 +17,7 @@ const CategoryCard: FC<CategoryCardProps> = ({ text, link, image, delay }) => {
     >
       <div
         className="relative w-full aspect-3/5 bg-center bg-cover group"
-        style={{ backgroundImage: `url(${image})` }}
+        style={{ backgroundImage: `url(${import.meta.env.VITE_APP_URL + image})` }}
       >
         <div className="absolute inset-0 rounded-md bg-black/50 md:rounded-none" />
         <div className="absolute text-2xl font-bold text-center text-white uppercase -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2">

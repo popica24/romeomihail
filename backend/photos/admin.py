@@ -2,8 +2,8 @@ import json
 from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from adminsortable2.admin import SortableAdminMixin
-from .models import Category, Album, Photo
+from adminsortable2.admin import SortableAdminMixin, SortableTabularInline, SortableAdminBase
+from .models import Category, CategoryCover, Album, Photo
 from django.urls import path
 from django.http import JsonResponse
 from django.conf import settings
@@ -28,12 +28,42 @@ def badge(label, css_class="badge-ghost", icon=None):
     )
 
 
+# ─── Category Cover Inline ────────────────────────────────────────────────────
+
+class CategoryCoverInline(SortableTabularInline):
+    model = CategoryCover
+    extra = 1
+    fields = ["order", "preview", "image", "title", "is_active"]
+    readonly_fields = ["preview"]
+    ordering = ["order"]
+    verbose_name = "Copertă"
+    verbose_name_plural = "🖼️ Coperți Categorie — trage pentru reordonare"
+
+    def preview(self, obj):
+        return thumbnail(obj.image.url if obj.image else None, size=16)
+
+    preview.short_description = "Preview"
+
+
+# ─── Category Admin ───────────────────────────────────────────────────────────
+
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name", "slug", "album_count_badge", "is_active", "created_at"]
+class CategoryAdmin(SortableAdminBase, admin.ModelAdmin):
+    list_display = ["name", "slug", "cover_thumb", "album_count_badge", "is_active", "created_at"]
     list_editable = ["is_active"]
     prepopulated_fields = {"slug": ("name",)}
     search_fields = ["name"]
+    inlines = [CategoryCoverInline]
+
+    fieldsets = (
+        ("📋 Informații de bază", {
+            "fields": ("name", "slug", "description", "is_active"),
+        }),
+    )
+
+    @admin.display(description="Copertă")
+    def cover_thumb(self, obj):
+        return thumbnail(obj.cover_url, size=14)
 
     @admin.display(description="Albume publicate")
     def album_count_badge(self, obj):
@@ -41,6 +71,54 @@ class CategoryAdmin(admin.ModelAdmin):
         css = "badge-success" if count > 0 else "badge-ghost"
         return badge(f"{count} albume", css, "images")
 
+
+# ─── Category Cover Admin ─────────────────────────────────────────────────────
+
+@admin.register(CategoryCover)
+class CategoryCoverAdmin(SortableAdminMixin, admin.ModelAdmin):
+    list_display = [
+        "preview_thumb",
+        "category",
+        "title",
+        "order",
+        "is_active",
+        "created_at",
+    ]
+    list_filter = ["category", "is_active"]
+    list_editable = ["order", "is_active"]
+    search_fields = ["category__name", "title"]
+    readonly_fields = ["preview_large"]
+
+    fieldsets = (
+        ("🖼️ Copertă", {
+            "fields": ("category", "image", "preview_large", "title"),
+        }),
+        ("⚙️ Setări", {
+            "fields": ("order", "is_active"),
+        }),
+    )
+
+    @admin.display(description="Preview")
+    def preview_thumb(self, obj):
+        return thumbnail(obj.image.url if obj.image else None, size=14)
+
+    @admin.display(description="Preview mare")
+    def preview_large(self, obj):
+        if obj.image:
+            return format_html(
+                '<div class="card w-fit shadow-xl mt-2"><figure>'
+                '<img src="{}" style="max-height:300px;max-width:500px;object-fit:cover;" />'
+                '</figure></div>',
+                obj.image.url,
+            )
+        return mark_safe(
+            '<div class="alert alert-info mt-2">'
+            '<i class="fa-solid fa-circle-info"></i>'
+            '<span>Nicio imagine încărcată încă.</span></div>'
+        )
+
+
+# ─── Album Admin ──────────────────────────────────────────────────────────────
 
 @admin.register(Album)
 class AlbumAdmin(SortableAdminMixin, admin.ModelAdmin):
@@ -125,7 +203,7 @@ class AlbumAdmin(SortableAdminMixin, admin.ModelAdmin):
             return JsonResponse({"error": "POST only"}, status=405)
 
         data = json.loads(request.body)
-        order_map = data.get("order", [])  # [{id, order}, ...]
+        order_map = data.get("order", [])
 
         for item in order_map:
             Photo.objects.filter(pk=item["id"], album_id=album_id).update(order=item["order"])
@@ -156,7 +234,6 @@ class AlbumAdmin(SortableAdminMixin, admin.ModelAdmin):
             photos = list(album.photos.order_by("order", "uploaded_at").values(
                 "id", "image", "order", "is_featured", "caption"
             ))
-            # Build absolute URLs
             media_url = settings.MEDIA_URL
             for p in photos:
                 p["url"] = media_url + p["image"]
@@ -164,7 +241,6 @@ class AlbumAdmin(SortableAdminMixin, admin.ModelAdmin):
             extra_context["photo_grid_data"] = json.dumps(photos)
             extra_context["album_id"] = object_id
         return super().change_view(request, object_id, form_url, extra_context)
-
 
     @admin.display(description="")
     def cover_thumb(self, obj):
@@ -197,6 +273,8 @@ class AlbumAdmin(SortableAdminMixin, admin.ModelAdmin):
             '<span>Nicio copertă încărcată încă.</span></div>'
         )
 
+
+# ─── Photo Admin ──────────────────────────────────────────────────────────────
 
 @admin.register(Photo)
 class PhotoAdmin(SortableAdminMixin, admin.ModelAdmin):

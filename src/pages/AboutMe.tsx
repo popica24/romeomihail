@@ -55,7 +55,7 @@ const AboutMe = () => {
         <div className="grid items-center max-w-6xl gap-12 mx-auto md:grid-cols-2">
           {/* Image */}
           <div
-            className="relative overflow-hidden shadow-2xl aspect-[3/4] rounded-2xl"
+            className="relative overflow-hidden shadow-2xl aspect-3/4 rounded-2xl"
             data-aos="fade-right"
           >
             <img
@@ -63,7 +63,7 @@ const AboutMe = () => {
               alt="Romeo Mihail"
               className="object-cover w-full h-full"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent" />
             <div className="absolute px-4 py-2 text-lg font-semibold text-white rounded-lg shadow-lg bottom-6 left-6 bg-[#6F8584]">
               Romeo Mihail Photography
             </div>

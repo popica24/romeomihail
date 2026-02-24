@@ -12,12 +12,16 @@ charset-normalizer==3.4.4
 django==6.0.2
     # via
     #   -r requirements-dev.in
+    #   django-admin-sortable2
     #   django-browser-reload
     #   django-cors-headers
     #   django-daisy
     #   django-debug-toolbar
+    #   django-storages
     #   django-tinymce
     #   djangorestframework
+django-admin-sortable2==2.3.1
+    # via -r requirements-dev.in
 django-browser-reload==1.21.0
     # via -r requirements-dev.in
 django-cors-headers==4.9.0
@@ -25,6 +29,8 @@ django-cors-headers==4.9.0
 django-daisy==2.0.7
     # via -r requirements-dev.in
 django-debug-toolbar==6.2.0
+    # via -r requirements-dev.in
+django-storages==1.14.6
     # via -r requirements-dev.in
 django-tinymce==5.0.0
     # via -r requirements-dev.in
@@ -53,8 +59,6 @@ sqlparse==0.5.5
     #   django
     #   django-debug-toolbar
 typing-extensions==4.15.0
-    # via
-    #   mypy
-    #   psycopg
+    # via mypy
 urllib3==2.6.3
     # via requests

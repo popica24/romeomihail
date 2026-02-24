@@ -9,3 +9,6 @@ django-browser-reload
 djangorestframework
 django-cors-headers
 Pillow
+django-admin-sortable2
+django-storages
+django_browser_reload

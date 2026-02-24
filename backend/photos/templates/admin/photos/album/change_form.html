@@ -1,0 +1,103 @@
+{% extends "admin/change_form.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/photos/css/photo_grid.css' %}">
+{% endblock %}
+
+{% block after_related_objects %}
+{{ block.super }}
+
+{% if album_id %}
+<div class="photo-grid-section">
+
+  <!-- Header -->
+  <div class="photo-grid-header">
+    <div class="photo-grid-title">
+      <i class="fa-solid fa-images"></i>
+      <span>Fotografii album</span>
+      <span class="photo-count-pill" id="photoCount">0</span>
+    </div>
+    <div class="photo-grid-actions">
+      <label class="btn-upload" for="photoUploadInput">
+        <i class="fa-solid fa-cloud-arrow-up"></i>
+        Adaugă fotografii
+        <input
+          type="file"
+          id="photoUploadInput"
+          accept="image/jpeg,image/png,image/webp"
+          multiple
+          hidden
+        />
+      </label>
+    </div>
+  </div>
+
+  <!-- Upload progress -->
+  <div class="upload-progress-bar" id="uploadProgressBar" hidden>
+    <div class="upload-progress-fill" id="uploadProgressFill"></div>
+    <span class="upload-progress-label" id="uploadProgressLabel">Se încarcă…</span>
+  </div>
+
+  <!-- Drop zone -->
+  <div class="drop-zone" id="dropZone">
+    <i class="fa-solid fa-images drop-zone-icon"></i>
+    <p>Trage fotografiile aici sau <strong>click pentru upload</strong></p>
+    <p class="drop-zone-hint">JPG, PNG, WebP · Max 20MB per fotografie</p>
+  </div>
+
+  <!-- Photo grid -->
+  <div class="photo-grid" id="photoGrid"></div>
+
+  <!-- Empty state -->
+  <div class="photo-grid-empty" id="photoGridEmpty">
+    <i class="fa-solid fa-camera-slash"></i>
+    <p>Nicio fotografie în acest album.</p>
+    <p>Folosește butonul de mai sus pentru a adăuga fotografii.</p>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="photo-lightbox" id="photoLightbox" style="display:none;">
+  <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+  <div class="lightbox-content">
+    <button class="lightbox-close" id="lightboxClose">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+    <div class="lightbox-meta">
+      <input
+        class="lightbox-caption"
+        id="lightboxCaption"
+        type="text"
+        placeholder="Adaugă o descriere…"
+        maxlength="255"
+      />
+      <button class="lightbox-save" id="lightboxSave">
+        <i class="fa-solid fa-floppy-disk"></i> Salvează
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.PHOTO_GRID_CONFIG = {
+    albumId: {{ album_id }},
+    photos: {{ photo_grid_data|safe }},
+    csrfToken: "{{ csrf_token }}",
+    uploadUrl: "/admin/photos/album/{{ album_id }}/photos/upload/",
+    reorderUrl: "/admin/photos/album/{{ album_id }}/photos/reorder/",
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+<script src="{% static 'admin/photos/js/photo_grid.js' %}"></script>
+{% else %}
+<div style="margin-top:1.5rem; padding:1rem; background:hsl(var(--b2,#f0f0f0)); border-radius:0.5rem; color:hsl(var(--bc,#333)); font-size:0.875rem;">
+  <i class="fa-solid fa-circle-info"></i>
+  Salvează albumul mai întâi, apoi poți adăuga fotografii.
+</div>
+{% endif %}
+
+{% endblock %}

@@ -25,6 +25,8 @@ else:
 
 # Application definition
 INSTALLED_APPS = [
+    "photos",
+    'adminsortable2',
     "django_daisy",
     "django.contrib.admin",
     "django.contrib.humanize",
@@ -33,7 +35,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "photos",
     "rest_framework",
     "corsheaders",
     "tinymce",
@@ -44,6 +45,58 @@ if DEBUG:
         "debug_toolbar",
         "django_browser_reload",
     ]
+
+DAISY_SETTINGS = {
+    'SITE_TITLE': 'Romeo Mihail Photography',
+    'SITE_HEADER': 'Romeo Mihail Photography',
+    'INDEX_TITLE': 'Panou de administrare',
+    'THEME': 'light',  # 'light' | 'dark' | 'cupcake' | 'forest' etc.
+    'DEFAULT_COLOR_SCHEME': 'light',
+    'NAVBAR_STICKY': True,
+    'SHOW_SIDEBAR': True,
+    'SIDEBAR_STICKY': True,
+    'NAVBAR': [
+        {
+            'app': 'albums',
+            'label': 'Albume',
+            'icon': 'fa-solid fa-images',
+            'models': [
+                {
+                    'model': 'albums.category',
+                    'label': 'Categorii',
+                    'icon': 'fa-solid fa-folder',
+                },
+                {
+                    'model': 'albums.album',
+                    'label': 'Albume',
+                    'icon': 'fa-solid fa-book-open',
+                },
+                {
+                    'model': 'albums.photo',
+                    'label': 'Fotografii',
+                    'icon': 'fa-solid fa-camera',
+                },
+            ],
+        },
+        {
+            'app': 'auth',
+            'label': 'Utilizatori',
+            'icon': 'fa-solid fa-users',
+            'models': [
+                {
+                    'model': 'auth.user',
+                    'label': 'Utilizatori',
+                    'icon': 'fa-solid fa-user',
+                },
+                {
+                    'model': 'auth.group',
+                    'label': 'Grupuri',
+                    'icon': 'fa-solid fa-user-group',
+                },
+            ],
+        },
+    ],
+}
 
 # CORS Configuration
 if DEBUG:
@@ -99,7 +152,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+        "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
@@ -127,7 +180,7 @@ ROOT_URLCONF = "photos.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, "photos", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -181,11 +234,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = "/staticfiles"
+
 
 # Media files (User uploads)
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_ROOT = "/media"
 
 # Upload limits (30MB)
 FILE_UPLOAD_MAX_MEMORY_SIZE = 30 * 1024 * 1024  # 30MB

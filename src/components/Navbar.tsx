@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { handleWhatsAppClick } from "../helpers/WhatsAppClick";
+import { isAlbumNew } from "../helpers/isAlbumNew";
+import { useFeaturedAlbumsQuery } from "../hooks/useFeaturedAlbumsQuery";
 
 interface MenuItem {
   label: string;
@@ -24,71 +26,6 @@ interface SubMenuItemItem {
   className?: string;
 }
 
-const menuItems: MenuItem[] = [
-  {
-    label: "ALBUME",
-    submenu: [
-      {
-        label: "NUNTA",
-        items: [
-          { label: "ALEX & MARIA", badge: "NOU", href: "#" },
-          { label: "ION & IOANA", badge: "NOU", href: "#" },
-          { label: "GEORGE & ALEXANDRA", href: "#" },
-          {
-            label: "VEZI MAI MULT",
-            href: "/albume/nunta",
-            className: "underline underline-offset-2",
-          },
-        ],
-      },
-      {
-        label: "BOTEZ",
-        items: [
-          { label: "PARASCHIV", href: "#" },
-          { label: "ALEXANDRU", href: "#" },
-          { label: "ANDREI", href: "#" },
-          {
-            label: "VEZI MAI MULT",
-            href: "/albume/botez",
-            className: "underline underline-offset-2",
-          },
-        ],
-      },
-      {
-        label: "TRASH THE DRESS",
-        items: [
-          { label: "MARIA", badge: "NOU", href: "#" },
-          { label: "IOANA", href: "#" },
-          { label: "ALEXANDRA", href: "#" },
-          {
-            label: "VEZI MAI MULT",
-            href: "/albume/trash-the-dress",
-            className: "underline underline-offset-2",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    label: "PRETURI",
-    href: "/preturi",
-    submenu: [],
-  },
-  {
-    label: "PREMII",
-    href: "/premii",
-    submenu: [],
-  },
-  {
-    label: "DESPRE MINE",
-    href: "/despre-mine",
-  },
-  {
-    label: "CONTACT",
-    action: handleWhatsAppClick,
-  },
-];
-
 interface NavbarProps {
   items?: MenuItem[];
   logo?: React.ReactNode;
@@ -97,7 +34,6 @@ interface NavbarProps {
 }
 
 const Navbar = ({
-  items = menuItems,
   logo,
   logoScrolled,
   className = "",
@@ -106,8 +42,82 @@ const Navbar = ({
   const [openMenus, setOpenMenus] = useState<{ [key: string]: boolean }>({});
   const [scrolled, setScrolled] = useState(false);
   const navRef = useRef<HTMLElement>(null);
-
   const location = useLocation();
+
+  // Fetch featured albums from backend
+  const { albums, loading } = useFeaturedAlbumsQuery();
+
+  // Build dynamic menu items
+  const menuItems: MenuItem[] = [
+    {
+      label: "ALBUME",
+      submenu: [
+        {
+          label: "NUNTĂ",
+          items: [
+            ...albums.nunta.map((album) => ({
+              label: album.name.toUpperCase(),
+              badge: isAlbumNew(album.created_at, 30) ? "NOU" : undefined,
+              href: `/albume/nunta/${album.slug}`,
+            })),
+            {
+              label: "VEZI MAI MULT",
+              href: "/albume/nunta",
+              className: "underline underline-offset-2",
+            },
+          ],
+        },
+        {
+          label: "BOTEZ",
+          items: [
+            ...albums.botez.map((album) => ({
+              label: album.name.toUpperCase(),
+              badge: isAlbumNew(album.created_at, 30) ? "NOU" : undefined,
+              href: `/albume/botez/${album.slug}`,
+            })),
+            {
+              label: "VEZI MAI MULT",
+              href: "/albume/botez",
+              className: "underline underline-offset-2",
+            },
+          ],
+        },
+        {
+          label: "TRASH THE DRESS",
+          items: [
+            ...albums["trash-the-dress"].map((album) => ({
+              label: album.name.toUpperCase(),
+              badge: isAlbumNew(album.created_at, 30) ? "NOU" : undefined,
+              href: `/albume/trash-the-dress/${album.slug}`,
+            })),
+            {
+              label: "VEZI MAI MULT",
+              href: "/albume/trash-the-dress",
+              className: "underline underline-offset-2",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: "PREȚURI",
+      href: "/preturi",
+      submenu: [],
+    },
+    {
+      label: "PREMII",
+      href: "/premii",
+      submenu: [],
+    },
+    {
+      label: "DESPRE MINE",
+      href: "/despre-mine",
+    },
+    {
+      label: "CONTACT",
+      action: handleWhatsAppClick,
+    },
+  ];
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -121,9 +131,7 @@ const Navbar = ({
       setScrolled(window.scrollY >= navHeight);
     };
 
-    // Run once on mount to get initial state (in case page loads mid-scroll)
     handleScroll();
-
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -141,7 +149,7 @@ const Navbar = ({
   const renderBadge = (badge?: string) => {
     if (!badge) return null;
     return (
-      <span className="bg-[#6F8584] text-white text-xs px-2 py-0.5 tracking-wider">
+      <span className="bg-[#6F8584] text-white text-xs px-2 py-0.5 tracking-wider rounded-sm">
         {badge}
       </span>
     );
@@ -183,7 +191,7 @@ const Navbar = ({
               <div className="flex items-center justify-between">
                 <Link
                   to={subItem.href || "#"}
-                  className="text-sm tracking-wider hover:text-gray-600 cursor-pointer"
+                  className="text-sm tracking-wider hover:text-gray-600 cursor-pointer font-semibold"
                 >
                   {subItem.label}
                 </Link>
@@ -194,20 +202,24 @@ const Navbar = ({
               </div>
               {subItem.items && (
                 <div className="ml-6 mt-2 space-y-2">
-                  {subItem.items.map((nestedItem, nestedIndex) => (
-                    <div
-                      key={nestedIndex}
-                      className="flex items-center justify-between"
-                    >
-                      <Link
-                        to={nestedItem.href}
-                        className={`block text-sm tracking-wider hover:text-gray-600 cursor-pointer ${nestedItem.className || ""}`}
+                  {loading ? (
+                    <div className="text-xs text-gray-400 italic">Se încarcă...</div>
+                  ) : (
+                    subItem.items.map((nestedItem, nestedIndex) => (
+                      <div
+                        key={nestedIndex}
+                        className="flex items-center justify-between"
                       >
-                        {nestedItem.label}
-                      </Link>
-                      {renderBadge(nestedItem.badge)}
-                    </div>
-                  ))}
+                        <Link
+                          to={nestedItem.href}
+                          className={`block text-sm tracking-wider hover:text-gray-600 cursor-pointer ${nestedItem.className || ""}`}
+                        >
+                          {nestedItem.label}
+                        </Link>
+                        {renderBadge(nestedItem.badge)}
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
             </div>
@@ -229,7 +241,7 @@ const Navbar = ({
           {item.submenu!.map((subItem, subIndex) => (
             <div key={subIndex}>
               <div className="flex items-center justify-between">
-                <Link to={subItem.href || "#"} className="text-sm">
+                <Link to={subItem.href || "#"} className="text-sm font-semibold">
                   {subItem.label}
                 </Link>
                 <div className="flex items-center space-x-2">
@@ -239,20 +251,24 @@ const Navbar = ({
               </div>
               {subItem.items && (
                 <div className="ml-4 mt-2 space-y-2">
-                  {subItem.items.map((nestedItem, nestedIndex) => (
-                    <div
-                      key={nestedIndex}
-                      className="flex items-center justify-between"
-                    >
-                      <Link
-                        to={nestedItem.href}
-                        className={`block text-sm text-gray-700 ${nestedItem.className || ""}`}
+                  {loading ? (
+                    <div className="text-xs text-gray-400 italic">Se încarcă...</div>
+                  ) : (
+                    subItem.items.map((nestedItem, nestedIndex) => (
+                      <div
+                        key={nestedIndex}
+                        className="flex items-center justify-between"
                       >
-                        {nestedItem.label}
-                      </Link>
-                      {renderBadge(nestedItem.badge)}
-                    </div>
-                  ))}
+                        <Link
+                          to={nestedItem.href}
+                          className={`block text-sm text-gray-700 ${nestedItem.className || ""}`}
+                        >
+                          {nestedItem.label}
+                        </Link>
+                        {renderBadge(nestedItem.badge)}
+                      </div>
+                    ))
+                  )}
                 </div>
               )}
             </div>
@@ -286,7 +302,7 @@ const Navbar = ({
               </Link>
             )}
 
-            {items.map((item, index) => (
+            {menuItems.map((item, index) => (
               <div key={index} className="relative group">
                 {hasSubmenu(item) ? (
                   <>
@@ -303,7 +319,7 @@ const Navbar = ({
                 ) : (
                   <Link
                     to={item.href || "#"}
-                    onClick={item.action || (() => {})}
+                    onClick={item.action}
                     className={`transition-colors ${
                       scrolled ? "hover:text-gray-600" : "hover:text-gray-300"
                     }`}
@@ -398,7 +414,7 @@ const Navbar = ({
             {/* Mobile Menu Items */}
             <div className="flex-1 overflow-y-auto px-6 py-8">
               <div className="space-y-6 text-sm tracking-wider">
-                {items.map((item, index) => (
+                {menuItems.map((item, index) => (
                   <div key={index}>
                     {hasSubmenu(item) ? (
                       <>
@@ -415,7 +431,7 @@ const Navbar = ({
                       <Link
                         to={item.href || "#"}
                         className="block w-full text-left"
-                        onClick={item.action || (() => {})}
+                        onClick={item.action}
                       >
                         {item.label}
                       </Link>

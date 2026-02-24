@@ -4,7 +4,7 @@ import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { AnimatePresence } from "framer-motion";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 // Eager load only the homepage
 import Homepage from "./pages/Homepage";
 
@@ -59,8 +59,19 @@ const PageLoader = () => (
   </div>
 );
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+});
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
+    <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <AnimatePresence mode="wait">
         <Suspense fallback={<PageLoader />}>
@@ -84,5 +95,6 @@ createRoot(document.getElementById("root")!).render(
         </Suspense>
       </AnimatePresence>
     </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>,
 );

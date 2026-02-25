@@ -18,7 +18,7 @@ echo "==> Collecting static files..."
 python manage.py collectstatic --noinput --clear
 
 echo "==> Starting Gunicorn..."
-exec gunicorn web.wsgi:application \
+exec gunicorn photos.wsgi:application \
     --bind 0.0.0.0:8000 \
     --workers ${GUNICORN_WORKERS:-4} \
     --threads ${GUNICORN_THREADS:-2} \

@@ -505,10 +505,10 @@ const AboutMe = () => {
               </svg>
             </button>
             <Link
-              to="/albume/nunta"
+              to="/preturi"
               className="inline-flex items-center gap-2 px-8 py-3 text-sm font-semibold tracking-wide uppercase transition-all bg-white border-2 border-[#6F8584] text-[#6F8584] rounded-lg shadow-lg hover:shadow-xl hover:scale-105"
             >
-              Vezi Portofoliul
+              Vezi Prețurile
             </Link>
           </div>
         </div>

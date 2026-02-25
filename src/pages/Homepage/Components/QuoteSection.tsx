@@ -9,15 +9,14 @@ interface QuoteSectionProps {
 
 const QuoteSection: FC<QuoteSectionProps> = ({ quote, author }) => {
   return (
-    <div className="relative z-20 flex flex-col items-center justify-center h-[20vh] bg-[#6F8584] border-red-700 shadow-2xl">
-      <div className="relative z-10 text-center">
+    <div className="relative flex h-[20vh] flex-col items-center justify-center border-red-700 bg-[#6F8584] shadow-2xl md:absolute md:bottom-20 md:right-0 md:h-[7vh] md:w-100 md:rounded-s-full md:opacity-80 z-20">
+      <div className="relative z-10 text-center mb-20 md:mb-0">
         <blockquote
           className="mb-2 text-lg font-light italic tracking-wide text-white"
           data-aos="fade-up"
         >
           {quote}
         </blockquote>
-
         <p
           className="text-xs tracking-widest uppercase text-white/60"
           data-aos="fade-up"
@@ -26,9 +25,8 @@ const QuoteSection: FC<QuoteSectionProps> = ({ quote, author }) => {
           {author}
         </p>
       </div>
-
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce">
-        <ArrowDownIcon className="w-6 h-6 text-white/70" />
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce md:left-20 md:top-1/4 md:translate-y-1/3">
+        <ArrowDownIcon className="h-6 w-6 text-white/70" />
       </div>
     </div>
   );

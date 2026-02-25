@@ -329,7 +329,7 @@ const Prizes = () => {
               href="/contact"
               className="inline-flex items-center gap-2 px-8 py-3 text-sm font-semibold tracking-wide uppercase transition-all bg-[#6F8584] text-white rounded-lg shadow-lg hover:shadow-xl hover:scale-105"
             >
-              Contactează-ne
+              Contactează-mă
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -344,12 +344,7 @@ const Prizes = () => {
                 />
               </svg>
             </a>
-            <a
-              href="/albume/nunta"
-              className="inline-flex items-center gap-2 px-8 py-3 text-sm font-semibold tracking-wide uppercase transition-all bg-white border-2 border-[#6F8584] text-[#6F8584] rounded-lg shadow-lg hover:shadow-xl hover:scale-105"
-            >
-              Vezi Portofoliul
-            </a>
+            
           </div>
         </div>
       </div>

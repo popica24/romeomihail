@@ -8,10 +8,8 @@ import { Link } from "react-router-dom";
 import { useCategoriesQuery } from "../../hooks/useCategoriesQuery";
 
 const Homepage: FC = () => {
-  // Fetch categories from backend
   const { data: categoriesData, isLoading } = useCategoriesQuery();
 
-  // Static hero images (always use these)
   const heroImages = useMemo<string[]>(
     () => [
       "/static/slide1.jpg",
@@ -20,7 +18,7 @@ const Homepage: FC = () => {
       "/static/slide4.jpg",
       "/static/slide5.jpg",
     ],
-    []
+    [],
   );
 
   const categories = useMemo(() => {
@@ -29,7 +27,6 @@ const Homepage: FC = () => {
     }
 
     return categoriesData
-      .filter((cat) => cat.is_active)
       .map((category) => ({
         text: category.name,
         link: category.slug,
@@ -50,12 +47,44 @@ const Homepage: FC = () => {
           <h2 className="mb-4 text-3xl font-light text-[#6F8584] md:text-4xl">
             Cine Sunt?
           </h2>
-          <p className="max-w-2xl mx-auto mb-8 leading-relaxed text-gray-600">
-            Bine ați venit! Sunt Romeo Mihail, fotograf profesionist specializat
-            în capturarea momentelor voastre speciale. Cu peste 10 ani de
-            experiență și o pasiune autentică pentru fotografie, transform
-            amintirile în opere de artă.
-          </p>
+          <div className="max-w-2xl mx-auto mb-8 text-gray-600 text-left md:text-center space-y-4">
+            <p>
+              Va uitati la fotografii si dintr-o data simtiti mirosul acelei
+              zile. Auziti acea muzica.
+            </p>
+            <p>
+              Simtiti imbratisartile. Inimile vi se strang putin si zambiti,
+              pierduti in amintiri.
+            </p>
+            <p>
+              Fotografia reușește să scrie istorie, fie o istorie personală fie
+              una colectivă.
+            </p>
+            <p>
+              Exista o fracțiune de secunda de creativitate a fotografului,
+              moment care dacă l-ai ratat este pierdut pe vecie.
+            </p>
+            <p>
+              Nu iti ofer doar fotografii. Ofer acele secunde furate din timp,
+              in care viata adevarata se intampla: privirea dintre voi, rasul
+              autentic, emotia din strangerea de mana, lacrima nestiuta de
+              nimeni.
+            </p>
+            <p>
+              Rolul meu este sa creez un spatiu sigur in care sa fiti pur si
+              simplu voi. Pentru ca atunci cand sunteti voi, iese lumina. Acolo
+              sunteti cei mai frumosi. Cei mai reali. Cei mai iubiti.
+            </p>
+            <p>
+              Iar eu vreau sa prind acea lumina in cadre care vor imbatrani
+              frumos, alaturi de voi.
+            </p>
+            <p>
+              Sunt Romeo Mihail si cred cu tarie ca fotografia nu este despre
+              mine, este despre voi!
+            </p>
+            <b className="whitespace-nowrap">Fi-ti-ar viata zambet ! :)</b>
+          </div>
           <Link
             to="/despre-mine"
             className="inline-flex items-center gap-2 px-8 py-3 text-sm font-semibold tracking-wide uppercase transition-all bg-[#6F8584] text-white rounded-lg shadow-lg hover:shadow-xl hover:scale-105"

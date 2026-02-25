@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { handleWhatsAppClick } from "../helpers/WhatsAppClick";
 
 interface Package {
   id: string;
@@ -8,131 +9,100 @@ interface Package {
   duration: string;
   features: string[];
   popular?: boolean;
-  category: "nunta" | "botez" | "cununie" | "trash-the-dress";
+  category: "nunta" | "botez";
 }
 
 const packages: Package[] = [
+  // NUNTĂ
   {
-    id: "nunta-basic",
-    name: "Pachet Esențial",
-    price: "2.500 RON",
-    duration: "6 ore acoperire",
+    id: "nunta-luxury",
+    name: "Pachet Nuntǎ Luxury",
+    price: "2.100 EUR",
+    duration: "De la pregătiri până la ora 3:00",
     category: "nunta",
     features: [
-      "6 ore de fotografiere profesională",
-      "Pregătiri mireasa sau mire",
-      "Ceremonie religioasă sau civilă",
-      "Ședință foto cu invitații",
-      "300+ fotografii editate profesional",
-      "Galerie online privată",
-      "Livrare în 4 săptămâni",
+      "Consultanță pentru pregătirea evenimentului",
+      "Timpul alocat: de la pregătiri până la ora 3 dimineața",
+      "Al doilea fotograf",
+      "Dronă - Love is in the Air",
+      "Albume foto 30x35 piele naturală cu inscripție",
+      "Galerie online",
+      "De la 1.600 de fotografii în sus editate profesional",
+      "Ședință Trash the Dress",
     ],
   },
   {
     id: "nunta-premium",
-    name: "Pachet Premium",
-    price: "3.500 RON",
-    duration: "10 ore acoperire",
+    name: "Pachet Nuntǎ Premium",
+    price: "1.600 EUR",
+    duration: "De la pregătiri până la ora 3:00",
     category: "nunta",
     popular: true,
     features: [
-      "10 ore de fotografiere profesională",
-      "Pregătiri mireasa și mire",
-      "Ceremonie religioasă și civilă",
-      "Petrecere completă (tort, dansuri, surprize)",
-      "Ședință foto de cuplu",
-      "500+ fotografii editate profesional",
-      "Album foto premium 30x30cm (40 pagini)",
-      "Galerie online privată",
-      "Livrare în 3 săptămâni",
-      "Cadou: Ședință foto aniversară 1 an",
+      "Consultanță pentru pregătirea evenimentului",
+      "Timpul alocat: de la pregătiri până la ora 3 dimineața",
+      "Dronă - Love is in the Air",
+      "Album foto premium 30x35 piele naturală cu inscripție",
+      "Galerie online",
+      "Între 1.200 - 1.600 de fotografii editate profesional",
     ],
   },
   {
-    id: "nunta-luxury",
-    name: "Pachet Luxury",
-    price: "5.000 RON",
-    duration: "Acoperire completă",
+    id: "nunta-esential",
+    name: "Pachet Nuntǎ Esențial",
+    price: "1.200 EUR",
+    duration: "10 ore de fotografiere",
     category: "nunta",
     features: [
-      "Acoperire nelimitată (de la pregătiri până la final)",
-      "Al doilea fotograf inclus",
-      "Pregătiri mireasa și mire",
-      "Toate ceremoniile și petrecerea",
-      "Ședință foto Save the Date (bonus)",
-      "Ședință foto Trash the Dress (bonus)",
-      "800+ fotografii editate profesional",
-      "2 albume foto premium 30x30cm",
-      "Stick USB personalizat cu toate fotografiile",
-      "Galerie online privată premium",
-      "Livrare în 2 săptămâni",
-      "Suport prioritar 24/7",
+      "Timpul alocat: 10 ore de fotografiere",
+      "Dronă - Love is in the Air",
+      "Galerie online",
+      "Între 900 - 1.200 de fotografii editate profesional",
     ],
   },
+
+  // BOTEZ
   {
-    id: "botez-standard",
-    name: "Pachet Botez Standard",
-    price: "1.200 RON",
-    duration: "3 ore acoperire",
+    id: "botez-luxury",
+    name: "Pachet Botez Luxury",
+    price: "1.500 EUR",
+    duration: "De la pregătiri până la ora 2:00",
     category: "botez",
     features: [
-      "3 ore de fotografiere",
-      "Ceremonie religioasă",
-      "Petrecere și mesele",
-      "Fotografii cu familia și nașii",
-      "150+ fotografii editate",
-      "Galerie online privată",
-      "Livrare în 2 săptămâni",
+      "Timpul alocat: de la pregătiri până la ora 2 dimineața",
+      "Al doilea fotograf",
+      "Dronă",
+      "Albume foto 30x35 piele naturală cu inscripție",
+      "Galerie online",
+      "De la 1.000 de fotografii în sus editate profesional",
     ],
   },
   {
     id: "botez-premium",
     name: "Pachet Botez Premium",
-    price: "1.800 RON",
-    duration: "5 ore acoperire",
+    price: "1.100 EUR",
+    duration: "De la pregătiri până la ora 2:00",
     category: "botez",
     popular: true,
     features: [
-      "5 ore de fotografiere",
-      "Pregătiri acasă",
-      "Ceremonie religioasă completă",
-      "Petrecere și toate momentele speciale",
-      "250+ fotografii editate profesional",
-      "Album foto 20x20cm (30 pagini)",
-      "Galerie online privată",
-      "Livrare în 2 săptămâni",
+      "Timpul alocat: de la pregătiri până la ora 2 dimineața",
+      "Dronă",
+      "Album foto premium 30x35 piele naturală cu inscripție",
+      "Galerie online",
+      "Între 700 - 1.000 de fotografii editate profesional",
     ],
   },
   {
-    id: "cununie-civila",
-    name: "Pachet Cununie Civilă",
-    price: "800 RON",
-    duration: "2 ore acoperire",
-    category: "cununie",
+    id: "botez-esential",
+    name: "Pachet Botez Esențial",
+    price: "800 EUR",
+    duration: "10 ore de fotografiere",
+    category: "botez",
     features: [
-      "2 ore de fotografiere",
-      "Ceremonie civilă completă",
-      "Fotografii cu familia și invitații",
-      "100+ fotografii editate",
-      "Galerie online privată",
-      "Livrare în 1 săptămână",
-    ],
-  },
-  {
-    id: "trash-the-dress",
-    name: "Ședință Trash the Dress",
-    price: "1.500 RON",
-    duration: "2-3 ore ședință",
-    category: "trash-the-dress",
-    features: [
-      "2-3 ore ședință foto creativă",
-      "Locație la alegere (plajă, natură, urban)",
-      "Coordonare concept artistic",
-      "200+ fotografii editate artistic",
-      "Retușare profesională avansată",
-      "Galerie online privată premium",
-      "Print-uri 30x40cm (5 bucăți)",
-      "Livrare în 2 săptămâni",
+      "Timpul alocat: 10 ore de fotografiere",
+      "Dronă",
+      "Galerie online",
+      "Între 500 - 700 de fotografii editate profesional",
     ],
   },
 ];
@@ -140,13 +110,11 @@ const packages: Package[] = [
 const Prices = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("toate");
 
-  const categories = [
-    { id: "toate", label: "Toate Pachetele" },
-    { id: "nunta", label: "Nuntă" },
-    { id: "botez", label: "Botez" },
-    { id: "cununie", label: "Cununie Civilă" },
-    { id: "trash-the-dress", label: "Trash the Dress" },
-  ];
+const categories = [
+  { id: "toate", label: "Toate Pachetele" },
+  { id: "nunta", label: "Nuntă" },
+  { id: "botez", label: "Botez" },
+];
 
   const filteredPackages =
     selectedCategory === "toate"
@@ -254,8 +222,8 @@ const Prices = () => {
               </ul>
 
               {/* CTA Button */}
-              <Link
-                to="/contact"
+              <button
+              onClick={handleWhatsAppClick}
                 className={`block w-full py-3 text-sm font-semibold tracking-wide text-center uppercase transition-all rounded-lg ${
                   pkg.popular
                     ? "bg-[#6F8584] text-white shadow-lg hover:shadow-xl hover:scale-105"
@@ -263,7 +231,7 @@ const Prices = () => {
                 }`}
               >
                 Solicită Ofertă
-              </Link>
+              </button>
             </div>
           ))}
         </div>
@@ -487,10 +455,10 @@ const Prices = () => {
               </svg>
             </Link>
             <Link
-              to="/albume/nunta"
+              to="/premii"
               className="inline-flex items-center gap-2 px-8 py-3 text-sm font-semibold tracking-wide uppercase transition-all bg-white border-2 border-[#6F8584] text-[#6F8584] rounded-lg shadow-lg hover:shadow-xl hover:scale-105"
             >
-              Vezi Portofoliul
+              Vezi Premiile Mele
             </Link>
           </div>
         </div>

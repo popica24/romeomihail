@@ -179,10 +179,6 @@ const AlbumCatalogue = () => {
           ))}
         </div>
       )}
-
-      <footer className="py-8 mt-16 text-center border-t border-gray-100">
-        <p className="text-xs tracking-widest text-gray-300 uppercase">Romeo Mihail © 2024</p>
-      </footer>
     </div>
   );
 };

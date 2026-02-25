@@ -80,13 +80,9 @@ class CategoryCoverSerializer(serializers.ModelSerializer):
     
 
 class CategorySerializer(serializers.ModelSerializer):
-    covers = CategoryCoverSerializer(many=True, read_only=True)
-    published_album_count = serializers.IntegerField(read_only=True)  # ✅ Removed source
-    cover_url = serializers.CharField(read_only=True)  # ✅ Removed source
-
     class Meta:
         model = Category
-        fields = ['id', 'name', 'slug', 'description', 'is_active', 'published_album_count', 'cover_url', 'covers']
+        fields = ['id', 'name', 'slug', 'cover_url']
 
 class PhotoReorderSerializer(serializers.Serializer):
     """Used for reordering photos via drag & drop"""
@@ -95,4 +91,3 @@ class PhotoReorderSerializer(serializers.Serializer):
             child=serializers.IntegerField()
         )
     )
-    # Expected format: [{"id": 1, "order": 0}, {"id": 2, "order": 1}, ...]

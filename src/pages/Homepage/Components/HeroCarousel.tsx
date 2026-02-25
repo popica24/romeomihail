@@ -19,7 +19,7 @@ interface HeroCarouselProps {
 
 const HeroCarousel: FC<HeroCarouselProps> = ({ images }) => {
   return (
-    <div className="relative w-full h-[80vh]">
+    <div className="relative w-full h-[80vh] md:h-screen">
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         slidesPerView={1}
@@ -30,7 +30,7 @@ const HeroCarousel: FC<HeroCarouselProps> = ({ images }) => {
           nextEl: ".swiper-btn--next",
           prevEl: ".swiper-btn--prev",
         }}
-        className="w-full h-[80vh] homepage-swiper"
+        className="w-full h-[80vh] md:h-screen homepage-swiper"
       >
         {images.map((image, index) => (
           <SwiperSlide key={image} className="w-full h-full">
